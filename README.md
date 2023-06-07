@@ -1,70 +1,49 @@
-# Paul Graham GPT
+# AI_Search
 
-AI-powered search and chat for [Paul Graham's](https://twitter.com/paulg) [essays](http://www.paulgraham.com/articles.html).
+[Paul-graham-gpt](https://github.com/mckaywrigley/paul-graham-gpt)를 커스텀한 AI-powered search
 
-All code & data used is 100% open-source.
 
 ## Dataset
 
-The dataset is a CSV file containing all text & embeddings used.
-
-Download it [here](https://drive.google.com/file/d/1BxcPw2mn0VYFucc62wlt9H0nQiOu38ki/view?usp=sharing).
-
-I recommend getting familiar with fetching, cleaning, and storing data as outlined in the scraping and embedding scripts below, but feel free to skip those steps and just use the dataset.
+AI-Hub 특허 데이터 활용
 
 ## How It Works
 
-Paul Graham GPT provides 2 things:
-
-1. A search interface.
-2. A chat interface.
-
 ### Search
 
-Search was created with [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings) (`text-embedding-ada-002`).
+[ko-sentence-transformers](https://github.com/jhgan00/ko-sentence-transformers)를 활용하여 특허 데이터 본문을 embedding (`model:ko-sroberta-multitask`)
 
-First, we loop over the essays and generate embeddings for each chunk of text.
+사용자의 검색어 쿼리를 받아 embedding을 생성하고 그 결과를 가장 유사한 본문의 내용을 찾는데 사용함.
 
-Then in the app we take the user's search query, generate an embedding, and use the result to find the most similar passages from the book.
+임베딩 벡터에 대해 코사인 유사도를 측정하는 방식으로 유사도 비교
 
-The comparison is done using cosine similarity across our database of vectors.
-
-Our database is a Postgres database with the [pgvector](https://github.com/pgvector/pgvector) extension hosted on [Supabase](https://supabase.com/).
-
-Results are ranked by similarity score and returned to the user.
-
-### Chat
-
-Chat builds on top of search. It uses search results to create a prompt that is fed into GPT-3.5-turbo.
-
-This allows for a chat-like experience where the user can ask questions about the book and get answers.
+Postgres 기반 데이터베이스 [Supabase](https://supabase.com/)를 사용하며 [pgvector](https://github.com/pgvector/pgvector) extension 사용
 
 ## Running Locally
 
-Here's a quick overview of how to run it locally.
-
 ### Requirements
 
-1. Set up OpenAI
+1. sentence_transformer_api 설치
 
-You'll need an OpenAI API key to generate embeddings.
+fastapi기반 embedding 생성 api
 
-2. Set up Supabase and create a database
+코드 다운로드
+도커빌드, 도커실행, 포트포워딩
 
-Note: You don't have to use Supabase. Use whatever method you prefer to store your data. But I like Supabase and think it's easy to use.
+2. Supabase 세팅, 데이터베이스 생성
 
-There is a schema.sql file in the root of the repo that you can use to set up the database.
+schema.sql 파일 내용 복사
 
-Run that in the SQL editor in Supabase as directed.
+Supabase SQL editor 통해 생성
 
-I recommend turning on Row Level Security and setting up a service role to use with the app.
+권장: Row Level Security 사용, service role 세팅
 
 ### Repo Setup
 
 3. Clone repo
 
 ```bash
-git clone https://github.com/mckaywrigley/paul-graham-gpt.git
+git clone https://github.com/gomgomcode/ai_search
 ```
 
 4. Install dependencies
@@ -78,58 +57,29 @@ npm i
 Create a .env.local file in the root of the repo with the following variables:
 
 ```bash
-OPENAI_API_KEY=
-
 NEXT_PUBLIC_SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 ### Dataset
 
-6. Run scraping script
-
-```bash
-npm run scrape
-```
-
-This scrapes all of the essays from Paul Graham's website and saves them to a json file.
-
-7. Run embedding script
+6. Run embedding script
 
 ```bash
 npm run embed
 ```
 
-This reads the json file, generates embeddings for each chunk of text, and saves the results to your database.
+json 전처리 필요
 
-There is a 200ms delay between each request to avoid rate limiting.
+json 파일 읽어서 embedding 생성, db에 저장
 
-This process will take 20-30 minutes.
+200ms delay between each request to avoid rate limiting.
+
 
 ### App
 
-8. Run app
+7. Run app
 
 ```bash
 npm run dev
 ```
-
-## Credits
-
-Thanks to [Paul Graham](https://twitter.com/paulg) for his writing.
-
-I highly recommend you read his essays.
-
-3 years ago they convinced me to learn to code, and it changed my life.
-
-## Contact
-
-If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley)!
-
-## Notes
-
-I sacrificed composability for simplicity in the app.
-
-Yes, you can make things more modular and reusable.
-
-But I kept pretty much everything in the homepage component for the sake of simplicity.
