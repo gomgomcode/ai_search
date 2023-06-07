@@ -28,7 +28,9 @@ Postgres 기반 데이터베이스 [Supabase](https://supabase.com/)를 사용�
 fastapi기반 embedding 생성 api
 
 코드 다운로드
+
 도커빌드, 도커실행, 포트포워딩
+
 
 2. Supabase 세팅, 데이터베이스 생성
 
@@ -38,6 +40,7 @@ Supabase SQL editor 통해 생성
 
 권장: Row Level Security 사용, service role 세팅
 
+
 ### Repo Setup
 
 3. Clone repo
@@ -46,15 +49,17 @@ Supabase SQL editor 통해 생성
 git clone https://github.com/gomgomcode/ai_search
 ```
 
+
 4. Install dependencies
 
 ```bash
 npm i
 ```
 
+
 5. Set up environment variables
 
-Create a .env.local file in the root of the repo with the following variables:
+.env 파일에 supabase 정보 입력
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
