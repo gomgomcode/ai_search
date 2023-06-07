@@ -23,7 +23,7 @@ Postgres 기반 데이터베이스 [Supabase](https://supabase.com/)를 사용�
 
 ### Requirements
 
-##### sentence_transformer_api 설치
+#### sentence_transformer_api 설치
 
 fastapi기반 embedding 생성 api
 
@@ -32,7 +32,7 @@ fastapi기반 embedding 생성 api
 도커빌드, 도커실행, 포트포워딩
 
 
-##### Supabase 세팅, 데이터베이스 생성
+#### Supabase 세팅, 데이터베이스 생성
 
 schema.sql 파일 내용 복사
 
@@ -43,21 +43,21 @@ Supabase SQL editor 통해 생성
 
 ### Repo Setup
 
-##### Clone repo
+#### Clone repo
 
 ```bash
 git clone https://github.com/gomgomcode/ai_search
 ```
 
 
-##### Install dependencies
+#### Install dependencies
 
 ```bash
 npm i
 ```
 
 
-##### Set up environment variables
+#### Set up environment variables
 
 .env 파일에 supabase 정보 입력
 
@@ -68,7 +68,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ### Dataset
 
-##### Run embedding script
+#### Run embedding script
 
 ```bash
 npm run embed
@@ -83,7 +83,7 @@ json 파일 읽어서 embedding 생성, db에 저장
 
 ### App
 
-##### Run app
+#### Run app
 
 ```bash
 npm run dev
