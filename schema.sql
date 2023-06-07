@@ -2,33 +2,27 @@
 create extension vector;
 
 -- RUN 2nd
-create table pg (
+create table patent_sample (
   id bigserial primary key,
-  essay_title text,
-  essay_url text,
-  essay_date text,
-  essay_thanks text,
+  doc_id text,
+  title text,
+  reg_no text,
   content text,
-  content_length bigint,
-  content_tokens bigint,
-  embedding vector (1536)
+  embedding vector (768)
 );
 
 -- RUN 3rd after running the scripts
 create or replace function pg_search (
-  query_embedding vector(1536),
+  query_embedding vector(768),
   similarity_threshold float,
   match_count int
 )
 returns table (
   id bigint,
-  essay_title text,
-  essay_url text,
-  essay_date text,
-  essay_thanks text,
+  doc_id text,
+  title text,
+  reg_no text,
   content text,
-  content_length bigint,
-  content_tokens bigint,
   similarity float
 )
 language plpgsql
@@ -36,23 +30,20 @@ as $$
 begin
   return query
   select
-    pg.id,
-    pg.essay_title,
-    pg.essay_url,
-    pg.essay_date,
-    pg.essay_thanks,
-    pg.content,
-    pg.content_length,
-    pg.content_tokens,
-    1 - (pg.embedding <=> query_embedding) as similarity
-  from pg
-  where 1 - (pg.embedding <=> query_embedding) > similarity_threshold
-  order by pg.embedding <=> query_embedding
+    patent_sample.id,
+    patent_sample.doc_id,
+    patent_sample.title,
+    patent_sample.reg_no,
+    patent_sample.content,
+    1 - (patent_sample.embedding <=> query_embedding) as similarity
+  from patent_sample
+  where 1 - (patent_sample.embedding <=> query_embedding) > similarity_threshold
+  order by patent_sample.embedding <=> query_embedding
   limit match_count;
 end;
 $$;
 
 -- RUN 4th
-create index on pg 
+create index on patent_sample
 using ivfflat (embedding vector_cosine_ops)
 with (lists = 100);

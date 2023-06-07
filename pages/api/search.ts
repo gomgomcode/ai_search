@@ -6,28 +6,25 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
   try {
-    const { query, apiKey, matches } = (await req.json()) as {
+    const { query, matches } = (await req.json()) as {
       query: string;
-      apiKey: string;
       matches: number;
     };
 
     const input = query.replace(/\n/g, " ");
 
-    const res = await fetch("https://api.openai.com/v1/embeddings", {
+    const res = await fetch("http://1.226.137.77:4004/embeddings", {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
+        "Content-Type": "application/json"
       },
       method: "POST",
       body: JSON.stringify({
-        model: "text-embedding-ada-002",
-        input
+        query: input
       })
     });
 
-    const json = await res.json();
-    const embedding = json.data[0].embedding;
+    const responseData = await res.json();
+    const embedding = responseData.embedding;
 
     const { data: chunks, error } = await supabaseAdmin.rpc("pg_search", {
       query_embedding: embedding,
